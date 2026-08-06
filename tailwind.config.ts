@@ -1,30 +1,24 @@
 import type { Config } from "tailwindcss";
 
-// NOTE: Placeholder brand tokens. Replace with the exact values from the
-// NorthFlow AI marketing site (colors, font stack, radii) once shared —
-// this file does not read from or depend on that project in any way.
+// NorthFlow AI visual identity — premium / luxury / AI-focused.
+// Palette named per brand brief: Deep Navy, Royal Navy, Midnight, Luxury Gold,
+// Light Gold, White, Off White. Exact hex values here are a considered first
+// pass; swap for locked brand values if the design team finalizes different
+// ones later — every color in the app is driven from this single source.
 const config: Config = {
   darkMode: "class",
-  content: [
-    "./app/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-  ],
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: "#eef4ff",
-          100: "#d9e6ff",
-          200: "#b3ccff",
-          300: "#80a8ff",
-          400: "#4d7fff",
-          500: "#2457ff",
-          600: "#1440db",
-          700: "#0f30ad",
-          800: "#0d2685",
-          900: "#0b1e66",
-          950: "#060f38"
+        midnight: "#05070D",
+        "deep-navy": "#0A1330",
+        "royal-navy": "#142451",
+        gold: {
+          DEFAULT: "#C9A227",
+          light: "#E8D6A0",
         },
+        offwhite: "#F7F5EF",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         surface: "hsl(var(--surface))",
@@ -32,11 +26,28 @@ const config: Config = {
         muted: "hsl(var(--muted))",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
+      letterSpacing: {
+        wide2: "0.14em",
       },
       borderRadius: {
         xl: "1rem",
         "2xl": "1.5rem",
+      },
+      boxShadow: {
+        gold: "0 0 0 1px rgba(201, 162, 39, 0.35)",
+        elevated: "0 20px 60px -20px rgba(5, 7, 13, 0.45)",
+      },
+      backgroundImage: {
+        "gold-line":
+          "linear-gradient(90deg, transparent 0%, #C9A227 50%, transparent 100%)",
+      },
+      container: {
+        center: true,
+        padding: { DEFAULT: "1.25rem", lg: "2rem" },
+        screens: { "2xl": "1280px" },
       },
     },
   },

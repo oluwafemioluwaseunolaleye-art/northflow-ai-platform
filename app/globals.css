@@ -3,20 +3,26 @@
 @tailwind utilities;
 
 :root {
-  --background: 220 25% 98%;
-  --foreground: 222 47% 11%;
-  --surface: 0 0% 100%;
-  --border: 220 20% 90%;
-  --muted: 220 10% 46%;
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* Off-white / white surfaces — used for dashboard + light marketing sections */
+  --background: 43 33% 96%; /* off-white */
+  --foreground: 224 55% 11%; /* deep navy text */
+  --surface: 0 0% 100%; /* white */
+  --border: 220 22% 88%;
+  --muted: 220 12% 42%;
+
+  /* Font stacks are CSS-var driven so a locked brand typeface can be swapped
+     in a single place later without touching component code. */
+  --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+/* Midnight / navy surfaces — used for the marketing hero, footer, dashboard sidebar */
 .dark {
-  --background: 222 47% 6%;
-  --foreground: 210 40% 98%;
-  --surface: 222 40% 9%;
-  --border: 222 25% 18%;
-  --muted: 215 16% 60%;
+  --background: 227 55% 5%; /* midnight */
+  --foreground: 43 33% 96%; /* off-white text */
+  --surface: 226 47% 13%; /* royal navy */
+  --border: 226 35% 22%;
+  --muted: 220 16% 65%;
 }
 
 * {
@@ -27,4 +33,19 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: rgba(201, 162, 39, 0.25);
+  color: hsl(var(--foreground));
+}
+
+/* Signature hairline: a thin gold gradient rule used sparingly as a section
+   divider — the one recurring "luxury" motif across the app. */
+.gold-rule {
+  height: 1px;
+  width: 100%;
+  background-image: linear-gradient(90deg, transparent 0%, #c9a227 50%, transparent 100%);
+  opacity: 0.6;
 }

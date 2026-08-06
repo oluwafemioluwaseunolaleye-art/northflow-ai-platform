@@ -10,9 +10,15 @@ The client dashboard and AI automation web application for **NorthFlow AI**.
 
 ## Status
 
-🚧 **Early scaffold.** This repository currently contains only the base
-project setup (tooling, folder structure, config). No application features
-(dashboard, leads, automations, etc.) have been built yet.
+✅ **Public marketing site built.** Full routing architecture, design
+system, and the public-facing homepage (hero, problem, solutions, workflow
+visualization, interactive demo, chat demo, how it works, integrations,
+industries, why us, founder, CTA) are live. The CTA links to the live Tally
+intake flow.
+
+🚧 **Dashboard is placeholder-only.** Auth, leads, automations,
+appointments, analytics, integrations, settings, and profile pages exist as
+routed placeholders — no backend logic yet.
 
 ## Planned Features
 
@@ -30,18 +36,20 @@ project setup (tooling, folder structure, config). No application features
 
 ## Tech Stack
 
-| Layer              | Choice                                          |
-| ------------------- | ------------------------------------------------ |
-| Framework           | [Next.js 14](https://nextjs.org/) (App Router)   |
-| Language            | TypeScript                                      |
-| Styling             | Tailwind CSS                                    |
-| Icons               | lucide-react                                    |
-| Validation          | Zod                                              |
-| Linting/Formatting  | ESLint + Prettier                                |
+| Layer            | Choice                                   |
+| ----------------- | ----------------------------------------- |
+| Framework          | [Next.js 14](https://nextjs.org/) (App Router) |
+| Language           | TypeScript                               |
+| Styling            | Tailwind CSS                             |
+| Motion             | Framer Motion                            |
+| Backend            | Supabase (Postgres, auth)                |
+| Icons              | lucide-react                             |
+| Validation         | Zod                                       |
+| Linting/Formatting | ESLint + Prettier                        |
 
-Database, authentication, AI provider, and email/calendar integrations are
-intentionally left unconfigured at this stage — see `.env.example` for the
-variables that will be needed once those decisions are made.
+The primary CTA ("Book a Free AI Audit") routes to the live Tally intake
+form — configured via `NEXT_PUBLIC_TALLY_URL` in `.env.example` /
+`lib/constants.ts`.
 
 ## Getting Started
 
@@ -67,35 +75,44 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ### Scripts
 
-| Command               | Description                            |
-| ---------------------- | ---------------------------------------- |
-| `npm run dev`          | Start the local development server      |
-| `npm run build`        | Build the production bundle             |
-| `npm run start`        | Run the production build                |
-| `npm run lint`         | Run ESLint                              |
-| `npm run format`       | Format the codebase with Prettier       |
-| `npm run type-check`   | Run the TypeScript compiler (no emit)   |
+| Command              | Description                          |
+| --------------------- | ------------------------------------- |
+| `npm run dev`         | Start the local development server    |
+| `npm run build`       | Build the production bundle           |
+| `npm run start`       | Run the production build              |
+| `npm run lint`        | Run ESLint                            |
+| `npm run format`      | Format the codebase with Prettier     |
+| `npm run type-check`  | Run the TypeScript compiler (no emit) |
 
 ## Project Structure
 
 ```
 northflow-ai-platform/
-├── app/                    # Next.js App Router: routes, layouts, pages
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── globals.css
+├── app/
+│   ├── (marketing)/        # Public site: /, /solutions, /how-it-works, /demo, /industries, /about
+│   ├── (auth)/             # /login, /signup
+│   ├── dashboard/          # /dashboard and all sub-routes
+│   ├── layout.tsx          # Root layout
+│   └── globals.css         # Design tokens (CSS variables) + Tailwind
 ├── components/
-│   ├── ui/                  # Reusable primitive UI components
-│   ├── layout/               # Layout components (nav, shell, sidebar, etc.)
-│   └── dashboard/             # Dashboard-specific components
-├── lib/                       # Utilities, helpers, API clients
-├── hooks/                     # Custom React hooks
-├── types/                     # Shared TypeScript types
-├── config/                     # App-level configuration (nav items, constants)
-├── public/
-│   └── images/                  # Static image assets
+│   ├── ui/                 # Button, Card, Container, Section, Eyebrow
+│   ├── navigation/          # Marketing navbar/footer, dashboard sidebar/topbar/mobile nav
+│   ├── marketing/            # Homepage sections (Hero, WorkflowVisualization, ChatDemo, ...)
+│   ├── dashboard/             # Dashboard shell components
+│   └── {leads,automations,analytics,appointments,integrations}/  # Feature components (not yet built)
+├── lib/
+│   ├── supabase/            # Browser + server Supabase clients
+│   ├── constants.ts          # Nav items, primary CTA / Tally URL
+│   └── utils.ts               # cn() class helper
+├── hooks/                    # Custom React hooks (useMediaQuery, ...)
+├── types/                    # Shared TypeScript types
+├── utils/                    # Framework-free helpers (formatting, etc.)
+├── styles/                   # Shared Framer Motion variants
+├── supabase/                 # SQL migrations (schema not yet defined)
+├── config/                   # Reserved for app-level config
+├── public/images/            # Static image assets
 ├── .env.example
-├── tailwind.config.ts
+├── tailwind.config.ts        # NorthFlow color palette + type scale
 ├── next.config.mjs
 ├── tsconfig.json
 └── package.json
@@ -103,11 +120,14 @@ northflow-ai-platform/
 
 ## Design Reference
 
-This project follows the visual identity established on the NorthFlow AI
-marketing website (colors, typography, layout concepts, component style,
-animations, navigation patterns). Design tokens in `tailwind.config.ts` are
-currently placeholders and will be updated to match that identity exactly as
-design work proceeds — without any dependency on files from that project.
+The application follows the NorthFlow AI visual identity: Midnight, Deep
+Navy, Royal Navy, Luxury Gold, Light Gold, White, and Off White — defined as
+CSS variables in `app/globals.css` and Tailwind tokens in
+`tailwind.config.ts`. Marketing sections default to the dark navy/midnight
+treatment; the dashboard uses a light off-white surface with a dark navy
+sidebar. A single gold hairline (`.gold-rule`) is used sparingly as the
+recurring luxury motif. All colors are defined once and consumed everywhere
+— no page hardcodes its own palette.
 
 ## Contributing
 
