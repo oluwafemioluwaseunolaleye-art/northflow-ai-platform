@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dashboardNavItems, dashboardFooterNavItems } from "@/lib/constants";
+import { signOut } from "@/lib/actions/auth";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -20,6 +22,9 @@ export function DashboardSidebar() {
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 px-4">
+        <p className="mb-2 px-3 text-xs font-medium uppercase tracking-wide2 text-gold">
+          AI Automation
+        </p>
         {dashboardNavItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -61,6 +66,15 @@ export function DashboardSidebar() {
             </Link>
           );
         })}
+        <form action={signOut}>
+          <button
+            type="submit"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground/75 transition-colors hover:bg-foreground/5 hover:text-foreground"
+          >
+            <LogOut size={18} strokeWidth={1.75} />
+            Log out
+          </button>
+        </form>
       </div>
     </aside>
   );

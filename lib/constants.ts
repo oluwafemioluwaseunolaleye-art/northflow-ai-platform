@@ -8,6 +8,7 @@ import {
   Plug,
   Settings,
   UserCircle,
+  HelpCircle,
 } from "lucide-react";
 
 export const marketingNavItems = [
@@ -31,15 +32,18 @@ export interface DashboardNavItem {
 }
 
 export const dashboardNavItems: DashboardNavItem[] = [
-  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Leads", href: "/dashboard/leads", icon: Users },
   { label: "Automations", href: "/dashboard/automations", icon: Zap },
   { label: "Appointments", href: "/dashboard/appointments", icon: CalendarClock },
   { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { label: "Integrations", href: "/dashboard/integrations", icon: Plug },
+  { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
+// Bottom-of-sidebar items. "Log out" is an action (server action), not a
+// route, so it's handled separately in the sidebar components.
 export const dashboardFooterNavItems: DashboardNavItem[] = [
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
-  { label: "Profile", href: "/dashboard/profile", icon: UserCircle },
+  { label: "Account", href: "/dashboard/profile", icon: UserCircle },
+  { label: "Help", href: "mailto:support@northflow.ai", icon: HelpCircle },
 ];

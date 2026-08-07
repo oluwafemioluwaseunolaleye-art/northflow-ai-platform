@@ -3,3 +3,4 @@ export { Container } from "./Container";
 export { Section } from "./Section";
 export { Card } from "./Card";
 export { Eyebrow } from "./Eyebrow";
+export { AuthAlert } from "./AuthAlert";
