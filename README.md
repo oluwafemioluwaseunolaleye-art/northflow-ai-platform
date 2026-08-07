@@ -11,14 +11,35 @@ The client dashboard and AI automation web application for **NorthFlow AI**.
 ## Status
 
 ✅ **Public marketing site built.** Full routing architecture, design
-system, and the public-facing homepage (hero, problem, solutions, workflow
-visualization, interactive demo, chat demo, how it works, integrations,
-industries, why us, founder, CTA) are live. The CTA links to the live Tally
-intake flow.
+system, and the public-facing homepage are live. The CTA links to the live
+Tally intake flow.
 
-🚧 **Dashboard is placeholder-only.** Auth, leads, automations,
-appointments, analytics, integrations, settings, and profile pages exist as
-routed placeholders — no backend logic yet.
+✅ **Authentication + dashboard overview built.** Supabase-backed sign up,
+login, logout, and password reset; `/dashboard/*` is protected by
+middleware (redirects unauthenticated users to `/login`, redirects
+authenticated users away from `/login`/`/signup`). The dashboard overview
+has a real greeting, metrics grid, and AI Command Center — all reading from
+Supabase with a clean zero/empty state until real data exists (see
+"Connecting Supabase" below).
+
+🚧 **Feature pages are placeholder-only.** Leads, automations,
+appointments, analytics, integrations, and settings pages are routed but
+have no functionality yet.
+
+## Connecting Supabase
+
+Auth and dashboard metrics are fully implemented but inert until you add
+real credentials — until then, `/dashboard/*` will correctly (and safely)
+redirect every request to `/login`, since there's no way to have a valid
+session. To activate:
+
+1. Create a Supabase project and copy its URL + anon key into `.env.local`
+   (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
+2. Add a `leads` table (with a `status` column), an `appointments` table,
+   and an `automations` table (with an `active` column) — `lib/dashboard.ts`
+   will start reporting real counts automatically, no code changes needed.
+3. Set `NEXT_PUBLIC_APP_URL` to your real domain in production so
+   confirmation/reset emails link back correctly.
 
 ## Planned Features
 
@@ -50,6 +71,10 @@ routed placeholders — no backend logic yet.
 The primary CTA ("Book a Free AI Audit") routes to the live Tally intake
 form — configured via `NEXT_PUBLIC_TALLY_URL` in `.env.example` /
 `lib/constants.ts`.
+
+Database, authentication, AI provider, and email/calendar integrations are
+intentionally left unconfigured at this stage — see `.env.example` for the
+variables that will be needed once those decisions are made.
 
 ## Getting Started
 
@@ -90,20 +115,24 @@ Then open [http://localhost:3000](http://localhost:3000).
 northflow-ai-platform/
 ├── app/
 │   ├── (marketing)/        # Public site: /, /solutions, /how-it-works, /demo, /industries, /about
-│   ├── (auth)/             # /login, /signup
-│   ├── dashboard/          # /dashboard and all sub-routes
+│   ├── (auth)/             # /login, /signup, /forgot-password, /reset-password
+│   ├── auth/callback/      # Supabase email link handler (confirm signup / password reset)
+│   ├── dashboard/          # /dashboard and all sub-routes (protected)
 │   ├── layout.tsx          # Root layout
 │   └── globals.css         # Design tokens (CSS variables) + Tailwind
 ├── components/
-│   ├── ui/                 # Button, Card, Container, Section, Eyebrow
+│   ├── ui/                 # Button, Card, Container, Section, Eyebrow, AuthAlert
 │   ├── navigation/          # Marketing navbar/footer, dashboard sidebar/topbar/mobile nav
 │   ├── marketing/            # Homepage sections (Hero, WorkflowVisualization, ChatDemo, ...)
-│   ├── dashboard/             # Dashboard shell components
+│   ├── dashboard/             # MetricsGrid, AICommandCenter, PagePlaceholder
 │   └── {leads,automations,analytics,appointments,integrations}/  # Feature components (not yet built)
 ├── lib/
-│   ├── supabase/            # Browser + server Supabase clients
-│   ├── constants.ts          # Nav items, primary CTA / Tally URL
-│   └── utils.ts               # cn() class helper
+│   ├── supabase/            # Browser + server Supabase clients, middleware session helper
+│   ├── actions/auth.ts       # Server actions: signIn, signUp, signOut, password reset
+│   ├── dashboard.ts           # getDashboardMetrics() + getGreeting()
+│   ├── constants.ts            # Nav items, primary CTA / Tally URL
+│   └── utils.ts                 # cn() class helper, getURL()
+├── middleware.ts               # Protects /dashboard/*, redirects logged-in users off /login,/signup
 ├── hooks/                    # Custom React hooks (useMediaQuery, ...)
 ├── types/                    # Shared TypeScript types
 ├── utils/                    # Framework-free helpers (formatting, etc.)
