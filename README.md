@@ -76,6 +76,52 @@ Database, authentication, AI provider, and email/calendar integrations are
 intentionally left unconfigured at this stage — see `.env.example` for the
 variables that will be needed once those decisions are made.
 
+## Deploying to Cloudflare
+
+This app is deployed via **Cloudflare Workers** using the OpenNext adapter
+(`@opennextjs/cloudflare`) — **not** Cloudflare Pages' static hosting, and
+**not** a static export. That distinction matters here: this app uses
+middleware (`middleware.ts`), Supabase cookie-based auth, and server
+actions, none of which a static site can run. The Workers + OpenNext path
+is Cloudflare's current recommended architecture for exactly this kind of
+app and keeps all of that working as-is.
+
+Config lives in `wrangler.jsonc` and `open-next.config.ts`, already set up
+and validated (`npx opennextjs-cloudflare build` + `wrangler deploy
+--dry-run` both pass in this repo). To actually ship it:
+
+1. **Set real values as Worker vars/secrets** — `wrangler.jsonc`'s `vars`
+   block only holds non-sensitive values. Set the rest with:
+   ```bash
+   npx wrangler secret put NEXT_PUBLIC_SUPABASE_URL
+   npx wrangler secret put NEXT_PUBLIC_SUPABASE_ANON_KEY
+   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+   ```
+2. **Deploy** (requires a Cloudflare account logged in via `wrangler login`,
+   or a `CLOUDFLARE_API_TOKEN` in CI):
+   ```bash
+   npm run deploy
+   ```
+   This runs `opennextjs-cloudflare build && opennextjs-cloudflare deploy`
+   and publishes to a `*.workers.dev` subdomain (or a custom domain, once
+   configured in the Cloudflare dashboard under Workers Routes).
+3. **If an existing Cloudflare Pages project is connected to this repo**
+   (e.g. one created by clicking "Connect to Git" in the Pages dashboard
+   with no framework-specific build config) — that project cannot serve
+   this app correctly; Pages' static hosting has no way to run
+   `middleware.ts` or the Supabase-authenticated routes. Either delete
+   that Pages project, or leave it disconnected, and deploy through
+   **Workers Builds** instead: in the Cloudflare dashboard, go to
+   **Workers & Pages → Create → Workers → Connect to Git**, pick this
+   repo, and set the build command to `npm run deploy`. Local `wrangler
+   deploy` (step 2) works too without any dashboard setup.
+
+For local testing against the real Workers runtime (not just `next dev`):
+```bash
+cp .dev.vars.example .dev.vars   # fill in real values
+npm run preview
+```
+
 ## Getting Started
 
 ### Prerequisites
@@ -115,24 +161,20 @@ Then open [http://localhost:3000](http://localhost:3000).
 northflow-ai-platform/
 ├── app/
 │   ├── (marketing)/        # Public site: /, /solutions, /how-it-works, /demo, /industries, /about
-│   ├── (auth)/             # /login, /signup, /forgot-password, /reset-password
-│   ├── auth/callback/      # Supabase email link handler (confirm signup / password reset)
-│   ├── dashboard/          # /dashboard and all sub-routes (protected)
+│   ├── (auth)/             # /login, /signup
+│   ├── dashboard/          # /dashboard and all sub-routes
 │   ├── layout.tsx          # Root layout
 │   └── globals.css         # Design tokens (CSS variables) + Tailwind
 ├── components/
-│   ├── ui/                 # Button, Card, Container, Section, Eyebrow, AuthAlert
+│   ├── ui/                 # Button, Card, Container, Section, Eyebrow
 │   ├── navigation/          # Marketing navbar/footer, dashboard sidebar/topbar/mobile nav
 │   ├── marketing/            # Homepage sections (Hero, WorkflowVisualization, ChatDemo, ...)
-│   ├── dashboard/             # MetricsGrid, AICommandCenter, PagePlaceholder
+│   ├── dashboard/             # Dashboard shell components
 │   └── {leads,automations,analytics,appointments,integrations}/  # Feature components (not yet built)
 ├── lib/
-│   ├── supabase/            # Browser + server Supabase clients, middleware session helper
-│   ├── actions/auth.ts       # Server actions: signIn, signUp, signOut, password reset
-│   ├── dashboard.ts           # getDashboardMetrics() + getGreeting()
-│   ├── constants.ts            # Nav items, primary CTA / Tally URL
-│   └── utils.ts                 # cn() class helper, getURL()
-├── middleware.ts               # Protects /dashboard/*, redirects logged-in users off /login,/signup
+│   ├── supabase/            # Browser + server Supabase clients
+│   ├── constants.ts          # Nav items, primary CTA / Tally URL
+│   └── utils.ts               # cn() class helper
 ├── hooks/                    # Custom React hooks (useMediaQuery, ...)
 ├── types/                    # Shared TypeScript types
 ├── utils/                    # Framework-free helpers (formatting, etc.)

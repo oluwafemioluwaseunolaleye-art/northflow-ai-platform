@@ -1,0 +1,11 @@
+# ─────────────────────────────────────────────────────────────
+# Local vars for `wrangler dev` / `npm run preview` (Workers runtime).
+# Copy to `.dev.vars` and fill in real values — .dev.vars is git-ignored.
+# For plain `next dev`, use `.env.local` instead (see .env.example).
+# ─────────────────────────────────────────────────────────────
+
+NEXT_PUBLIC_SUPABASE_URL=""
+NEXT_PUBLIC_SUPABASE_ANON_KEY=""
+SUPABASE_SERVICE_ROLE_KEY=""
+NEXT_PUBLIC_APP_URL="http://localhost:8787"
+NEXT_PUBLIC_TALLY_URL="https://tally.so/r/jaX7Za"
