@@ -59,8 +59,10 @@ export async function runQualification(leadId: string) {
 
   await supabase.from("automation_activity").insert({
     lead_id: leadId,
-    automation_name: result.source === "anthropic" ? "AI Qualification" : "AI Qualification (rule-based)",
-    action: `Result: ${result.status.replace("_", " ")} (score ${result.score}/100) — ${result.reason}`,
+    automation_name: "AI Qualification",
+    action: `Result: ${result.status.replace("_", " ")} (score ${result.score}/100) — ${result.reason}${
+      result.source === "rules-fallback" ? " [rule-based fallback]" : ""
+    }`,
   });
 
   revalidatePath(`/dashboard/leads/${leadId}`);
